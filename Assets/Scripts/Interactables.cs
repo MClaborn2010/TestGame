@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
+
     [Header("Interactable Properties")]
     private string interactableName; // Name displayed in logs or UI
     public bool isInteractable = true; // To check if this object can be interacted with
 
-     private void Start()
+    private void Start()
     {
         // Automatically set interactableName to the GameObject's name
         interactableName = gameObject.name;

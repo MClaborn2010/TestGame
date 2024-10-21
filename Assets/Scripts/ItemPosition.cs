@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class ItemPosition : MonoBehaviour
 {
+    // This class ensures a held item is always in the bottom right of your screen. 
+
     public Camera playerCamera; // Reference to the player's camera
     public Vector3 offset; // Offset from the camera's bottom right corner
 

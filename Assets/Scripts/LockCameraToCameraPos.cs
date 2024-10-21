@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class lockCameraToCameraPos : MonoBehaviour
 {
+    [Header("Camera Position")]
     public Transform cameraPosition;
-    // Update is called once per frame
+
     void Update()
     {
-        transform.position = cameraPosition.position;
+        transform.position = cameraPosition.position; // Assigns transform.position of camera to the Camera Position game object. 
     }
 }
