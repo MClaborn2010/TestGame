@@ -1,7 +1,10 @@
 using UnityEngine;
 
-public static class GameObjectUtility
+public class GameObjectUtility : MonoBehaviour
 {
-   
-
+    // Method to delete the GameObject
+    public void DeleteGameObject(GameObject gameObject)
+    {
+        Destroy(gameObject);
+    }
 }
