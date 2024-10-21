@@ -15,6 +15,8 @@ public class PlayerInteraction : MonoBehaviour
     public Transform heldItem;
     public GameObject interactableObjects;
 
+    private bool isHeldItem = false; // Track if an item is currently held
+
     private void Start()
     {
         if (playerCamera == null)
@@ -31,17 +33,15 @@ public class PlayerInteraction : MonoBehaviour
             if (Input.GetKeyDown(interactKey)) // Example interaction key
             {
                 Interact();
-                DeleteCurrentInteractable();
             }
         }
 
         // Allow dropping the item at any time
-        if (Input.GetKeyDown(dropKey)) // Drop key (you can change this to a different key)
+        if (Input.GetKeyDown(dropKey) && isHeldItem) // Only drop if an item is held
         {
             DropItem();
         }
     }
-
 
     private bool IsInteractableInRange()
     {
@@ -82,6 +82,9 @@ public class PlayerInteraction : MonoBehaviour
             // Reset position to be relative to HeldItem
             heldItemObject.transform.localPosition = Vector3.zero; // Center it within HeldItem
 
+            // Set isHeldItem to true
+            isHeldItem = true;
+
             // Reset currentInteractable after interaction
             currentInteractable = null; // Reset after interaction
         }
@@ -108,35 +111,9 @@ public class PlayerInteraction : MonoBehaviour
                 rb.mass = 1f; // Set mass as needed
             }
 
-            // Reset the reference
+            // Reset the reference and isHeldItem
             heldItemObject = null;
+            isHeldItem = false;
         }
     }
-
-
-
-
-
-
-
-
-
-    private void DeleteCurrentInteractable()
-    {
-        if (currentInteractable != null)
-        {
-            GameObject.Destroy(currentInteractable.gameObject);
-            currentInteractable = null; // Reset after deletion
-        }
-    }
-
-
-
-
-
-
-
-
-
-
 }
