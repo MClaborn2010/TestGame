@@ -5,6 +5,7 @@ public class PlayerInteraction : MonoBehaviour
 {
     [Header("Interaction Settings")] // These are Headers. Use these to create categories within your inspector. 
     public float interactionRange = 3f; // Maximum distance to interact
+    public float throwPower;
 
     [Header("Camera")]
     public Camera playerCamera; // Reference to the player's camera
@@ -12,6 +13,7 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Key Codes")] // Key Codes set to default values. Making these public allows you to change them directly from the editor. 
     public KeyCode interactKey = KeyCode.E;
     public KeyCode dropKey = KeyCode.G;
+    public KeyCode throwKey = KeyCode.Mouse0;
 
     [Header("Held Item")]
     public Transform heldItem;
@@ -47,8 +49,14 @@ public class PlayerInteraction : MonoBehaviour
         // Allow drop item if an item is held. 
         if (Input.GetKeyDown(dropKey) && isHeldItem)
         {
-            DropItem();
+            DropItem(0f);
         }
+
+        if (Input.GetKeyDown(throwKey) && isHeldItem)
+        {
+            ThrowItem(throwPower); // Call the new ThrowItem method
+        }
+
     }
 
     private bool IsInteractableInRange()
@@ -69,7 +77,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Interact()
     {
-        if (currentInteractable != null)
+        if (currentInteractable != null && !isHeldItem)
         {
             // Add current interactable to heldItem
             heldItemObject = currentInteractable.gameObject;
@@ -98,32 +106,40 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    private void DropItem()
+    private void DropItem(float forceAmount)
     {
-        // Check if you have a heldItem
         if (heldItemObject != null)
         {
-            // Set the parent to null to remove it from HeldItem
             heldItemObject.transform.SetParent(null);
 
-            // Set its position to where the player is looking, with a small upward offset. Might consider changing this to take the horizontal orientation of the camera but not vertical so the user cannot move the item up or down and clip floors. 
-            // Could potentially add or extend player collider to avoid horizontal collisions with walls. 
             heldItemObject.transform.position = playerCamera.transform.position + playerCamera.transform.forward * 1.5f;
             heldItemObject.transform.position += Vector3.up * 0.5f;
 
-            // Set the parent to InteractableObjects
             heldItemObject.transform.SetParent(interactableObjects.transform);
 
-            // Add Rigidbody if it doesn't exist
-            if (heldItemObject.GetComponent<Rigidbody>() == null)
+            Rigidbody rb = heldItemObject.GetComponent<Rigidbody>();
+            if (rb == null)
             {
-                Rigidbody rb = heldItemObject.AddComponent<Rigidbody>();
-                rb.mass = 1f; // Set mass as needed
+                rb = heldItemObject.AddComponent<Rigidbody>();
+                rb.mass = 1f;
             }
 
-            // Reset the reference and isHeldItem
+            // Apply force if a value is provided
+            if (forceAmount > 0f)
+            {
+                rb.AddForce(playerCamera.transform.forward * forceAmount, ForceMode.Impulse);
+            }
+
             heldItemObject = null;
             isHeldItem = false;
         }
     }
+
+    private void ThrowItem(float forceAmount)
+    {
+        DropItem(forceAmount); // Call DropItem with a force value to throw the item
+    }
+
+
+
 }
