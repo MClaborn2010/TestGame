@@ -1,10 +1,11 @@
 using UnityEngine;
-using UnityEngine.UI;  // Only needed if you're using UI for displaying the score
+using TMPro;  // Include the TMPro namespace for TextMeshPro
 
 public class ScoreManager : MonoBehaviour
 {
     public int score = 0;
-    public Text scoreText;  // Link this to a UI Text element in the inspector
+    public TextMeshPro scoreText;  // Link this to a TextMeshPro element in the inspector
+    public AudioSource scoreSound;
 
     // Method to add points to the score
     public void AddScore(int points)
@@ -12,14 +13,15 @@ public class ScoreManager : MonoBehaviour
         score += points;
         UpdateScoreUI();
         Debug.Log("Score: " + score);  // Log the score for debugging
+        scoreSound.Play();
     }
 
-    // Update the UI (if using a UI Text element)
+    // Update the UI (if using a TextMeshPro element)
     void UpdateScoreUI()
     {
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + score;
+            scoreText.text = "Points: " + score;  // Update the TextMeshPro text
         }
     }
 }
